@@ -14,7 +14,7 @@ Ball.Game.prototype = {
 		this.timer = 0;
 		this.totalTimer = 0;
 		this.level = 1;
-		this.maxLevels = 5;
+		this.maxLevels = 3;
 		this.movementForce = 10;
 		this.ballStartPos = { x: Ball._WIDTH*0.5, y: 450 };
 
@@ -65,39 +65,46 @@ Ball.Game.prototype = {
 		this.levels = [];
 		this.levelData = [
 			[
-				{ x: 0, y: 0, t: 'wall-wide', s: '25' },
-                { x: 100, y: 200, t: 'wall-wide', s: '300' },
-
-                { x: 50, y: 50, t: 'wall-tall', s: '100' }
-			],
-			[
-				{ x: 72, y: 320, t: 'w' },
-				{ x: 200, y: 320, t: 'h' },
-				{ x: 72, y: 150, t: 'w' }
-			],
-			[
 				{ x: 64, y: 352, t: 'h' },
 				{ x: 224, y: 352, t: 'h' },
 				{ x: 0, y: 240, t: 'w' },
 				{ x: 128, y: 240, t: 'w' },
 				{ x: 200, y: 52, t: 'h' }
+
 			],
 			[
-				{ x: 78, y: 352, t: 'h' },
-				{ x: 78, y: 320, t: 'w' },
-				{ x: 0, y: 240, t: 'w' },
-				{ x: 192, y: 240, t: 'w' },
-				{ x: 30, y: 150, t: 'w' },
-				{ x: 158, y: 150, t: 'w' }
+				{ x: 100, y: 100, t: 'wall-wide', s: '1050' },
+				{ x: 0, y: 200, t: 'wall-wide', s: '600' },
+				{ x: 600, y: 170, t: 'wall-tall', s: '100' },
+				{ x: 700, y: 170, t: 'wall-tall', s: '100' },
+				{ x: 725, y: 200, t: 'wall-wide', s: '600' },
+				{ x: 725, y: 325, t: 'wall-wide', s: '450' },
+				{ x: 125, y: 325, t: 'wall-wide', s: '450' },
+				{ x: 305, y: 450, t: 'wall-wide', s: '700' },
+				{ x: 100, y: 325, t: 'wall-tall', s: '250' },
+				{ x: 1151, y: 325, t: 'wall-tall', s: '250' },
+				{ x: 550, y: 525, t: 'wall-tall', s: '100' },
+				{ x: 700, y: 525, t: 'wall-tall', s: '100' }
 			],
 			[
-				{ x: 188, y: 352, t: 'h' },
-				{ x: 92, y: 320, t: 'w' },
-				{ x: 0, y: 240, t: 'w' },
-				{ x: 128, y: 240, t: 'w' },
-				{ x: 256, y: 240, t: 'h' },
-				{ x: 180, y: 52, t: 'h' },
-				{ x: 52, y: 148, t: 'w' }
+				{ x: 0, y: 325, t: 'wall-wide', s: '300' },
+				{ x: 0, y: 105, t: 'wall-wide', s: '300' },
+				{ x: 90, y: 220, t: 'wall-wide', s: '334' },
+				{ x: 1000, y: 250, t: 'wall-wide', s: '300' },
+				{ x: 705, y: 390, t: 'wall-wide', s: '400' },
+				{ x: 400, y: 250, t: 'wall-wide', s: '400' },
+				{ x: 505, y: 500, t: 'wall-wide', s: '400' },
+				{ x: 1005, y: 500, t: 'wall-wide', s: '400' },
+				{ x: 405, y: 410, t: 'wall-wide', s: '200' },
+				{ x: 90, y: 325, t: 'wall-tall', s: '250' },
+				{ x: 1070, y: 75, t: 'wall-tall', s: '200' },
+				{ x: 570, y: 0, t: 'wall-tall', s: '200' },
+				{ x: 1170, y: 165, t: 'wall-tall', s: '250' },
+				{ x: 870, y: 165, t: 'wall-tall', s: '250' },
+				{ x: 605, y: 334, t: 'wall-tall', s: '100' },
+				{ x: 400, y: 225, t: 'wall-tall', s: '300' },
+				{ x: 300, y: 425, t: 'wall-tall', s: '150' },
+				{ x: 200, y: 425, t: 'wall-tall', s: '400' }
 			]
 		];
 		for(var i=0; i<this.maxLevels; i++) {
