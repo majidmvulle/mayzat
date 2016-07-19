@@ -103,18 +103,19 @@ Ball.Game.prototype = {
 		this.levels = [];
 		this.levelData = [
 			[
-				{ x: 305, y: 450, t: 'wall-tall', s: '700' },
+				{ x: 305, y: 450, t: 'wall-tall', s: '210' },
 				{ x: 580, y: 0, t: 'wall-tall', s: '250' },
 				{ x: 100, y: 325, t: 'wall-wide', s: '250' },
 				{ x: 451, y: 325, t: 'wall-wide', s: '450' },
 				{ x: 550, y: 525, t: 'wall-wide', s: '300' },
 				{ x: 705, y: 120, t: 'wall-tall', s: '225' },
 				{ x: 851, y: 125, t: 'wall-wide', s: '450' },
-                { x: 0, y: 100, t: 'syringe', q: 0 },
-                { x: 0, y: 200, t: 'bill', q:1 },
-                { x: 0, y: 300, t: 'fence', q:2 },
-                { x: 0, y: 400, t: 'cone',  q: 3},
-                { x:1000, y: 100, t: 'exit' }
+				{ x: 900, y: 50, t: 'syringe', q: 0 },
+				{ x: 550, y: 250, t: 'bill', q:1 },
+				{ x: 800, y: 200, t: 'fence', q:2 },
+				{ x: 600, y: 400, t: 'cone',  q: 3},
+				{ x: 1100, y: 100, t: 'exit' }
+
 			],
 			[
 				{ x: 100, y: 100, t: 'wall-wide', s: '1050' },
@@ -128,7 +129,12 @@ Ball.Game.prototype = {
 				{ x: 100, y: 325, t: 'wall-tall', s: '250' },
 				{ x: 1151, y: 325, t: 'wall-tall', s: '250' },
 				{ x: 550, y: 525, t: 'wall-tall', s: '100' },
-				{ x: 700, y: 525, t: 'wall-tall', s: '100' }
+				{ x: 700, y: 525, t: 'wall-tall', s: '100' },
+				{ x: 1200, y: 50, t: 'syringe', q: 0 },
+				{ x: 450, y: 120, t: 'bill', q:1 },
+				{ x: 1100, y: 250, t: 'fence', q:2 },
+				{ x: 600, y: 400, t: 'cone',  q: 3},
+				{ x: 660, y: 100, t: 'exit' }
 			],
 			[
 				{ x: 0, y: 325, t: 'wall-wide', s: '300' },
@@ -148,7 +154,13 @@ Ball.Game.prototype = {
 				{ x: 605, y: 334, t: 'wall-tall', s: '100' },
 				{ x: 400, y: 225, t: 'wall-tall', s: '300' },
 				{ x: 300, y: 425, t: 'wall-tall', s: '150' },
-				{ x: 200, y: 425, t: 'wall-tall', s: '400' }
+				{ x: 200, y: 425, t: 'wall-tall', s: '233' },
+				{ x: 300, y: 120, t: 'syringe', q: 0 },
+				{ x: 750, y: 120, t: 'bill', q:1 },
+				{ x: 1100, y: 350, t: 'fence', q:2 },
+				{ x: 330, y: 400, t: 'cone',  q: 3},
+				{ x: 100, y: 100, t: 'exit' }
+
 			]
 		];
 		for(var i=0; i<this.maxLevels; i++) {
