@@ -123,12 +123,14 @@ Ball.Game.prototype = {
                     case 'wall-wide': {
                         var wall = newLevel.create(item.x, item.y + this.panelHeight, 'wall-wide');
                         wall.scale.setTo(Number(item.s) / 1000, 1);
+                        wall.data = item
                         break;
                     }
 
                     case 'wall-tall': {
                         var wall = newLevel.create(item.x, item.y + this.panelHeight, 'wall-tall');
                         wall.scale.setTo(1, Number(item.s) / 1000);
+                        wall.data = item
                         break;
                     }
 
@@ -139,93 +141,98 @@ Ball.Game.prototype = {
                 }
             }
 
-            newLevel.setAll('body.immovable', true);
-            newLevel.visible = false;
-            this.levels.push(newLevel);
+			newLevel.setAll('body.immovable', true);
+			newLevel.visible = false;
+			this.levels.push(newLevel);
+		}
+	},
+	showLevel: function(level) {
+		var lvl = level | this.level;
+		if(this.levels[lvl-2]) {
+			this.levels[lvl-2].visible = false;
+		}
+		this.levels[lvl-1].visible = true;
+	},
+	updateCounter: function() {
+		this.timer++;
+		this.timerText.setText("Time: "+this.timer);
+		this.totalTimeText.setText("Total time: "+(this.totalTimer+this.timer));
+	},
+	managePause: function() {
+		this.game.paused = true;
+		var pausedText = this.add.text(Ball._WIDTH*0.5, 250, "Game paused,\ntap anywhere to continue.", this.fontMessage);
+		pausedText.anchor.set(0.5);
+		this.input.onDown.add(function(){
+			pausedText.destroy();
+			this.game.paused = false;
+		}, this);
+	},
+	manageAudio: function() {
+		this.audioStatus =! this.audioStatus;
+		this.audioButton.animations.play(this.audioStatus);
+	},
+	update: function() {
+		if(this.keys.left.isDown) {
+			this.ball.body.velocity.x -= this.movementForce;
+		}
+		else if(this.keys.right.isDown) {
+			this.ball.body.velocity.x += this.movementForce;
+		}
+		if(this.keys.up.isDown) {
+			this.ball.body.velocity.y -= this.movementForce;
+		}
+		else if(this.keys.down.isDown) {
+			this.ball.body.velocity.y += this.movementForce;
+		}
+		this.physics.arcade.collide(this.ball, this.borderGroup, this.wallCollision, null, this);
+		this.physics.arcade.collide(this.ball, this.levels[this.level-1], this.wallCollision, null, this);
+		this.physics.arcade.overlap(this.ball, this.hole, this.finishLevel, null, this);
+	},
+	wallCollision: function(ball, obstacle) {
+		if(this.audioStatus) {
+			this.bounceSound.play();
+		}
+		// Vibration API
+		if("vibrate" in window.navigator) {
+			window.navigator.vibrate(100);
+		}
+
+        if (obstacle.data.t) {
+            // hit element with data
+            // console.log('You have hit', obstacle.data.t)
         }
-    },
-    showLevel: function(level) {
-        var lvl = level | this.level;
-        if(this.levels[lvl-2]) {
-            this.levels[lvl-2].visible = false;
-        }
-        this.levels[lvl-1].visible = true;
-    },
-    updateCounter: function() {
-        this.timer++;
-        this.timerText.setText("Time: "+this.timer);
-        this.totalTimeText.setText("Total time: "+(this.totalTimer+this.timer));
-    },
-    managePause: function() {
-        this.game.paused = true;
-        var pausedText = this.add.text(Ball._WIDTH*0.5, 250, "Game paused,\ntap anywhere to continue.", this.fontMessage);
-        pausedText.anchor.set(0.5);
-        this.input.onDown.add(function(){
-            pausedText.destroy();
-            this.game.paused = false;
-        }, this);
-    },
-    manageAudio: function() {
-        this.audioStatus =! this.audioStatus;
-        this.audioButton.animations.play(this.audioStatus);
-    },
-    update: function() {
-        if(this.keys.left.isDown) {
-            this.ball.body.velocity.x -= this.movementForce;
-        }
-        else if(this.keys.right.isDown) {
-            this.ball.body.velocity.x += this.movementForce;
-        }
-        if(this.keys.up.isDown) {
-            this.ball.body.velocity.y -= this.movementForce;
-        }
-        else if(this.keys.down.isDown) {
-            this.ball.body.velocity.y += this.movementForce;
-        }
-        this.physics.arcade.collide(this.ball, this.borderGroup, this.wallCollision, null, this);
-        this.physics.arcade.collide(this.ball, this.levels[this.level-1], this.wallCollision, null, this);
-        this.physics.arcade.overlap(this.ball, this.hole, this.finishLevel, null, this);
-    },
-    wallCollision: function() {
-        if(this.audioStatus) {
-            this.bounceSound.play();
-        }
-        // Vibration API
-        if("vibrate" in window.navigator) {
-            window.navigator.vibrate(100);
-        }
-    },
-    handleOrientation: function(e) {
-        // Device Orientation API
-        var x = e.gamma; // range [-90,90], left-right
-        var y = e.beta;  // range [-180,180], top-bottom
-        var z = e.alpha; // range [0,360], up-down
-        Ball._player.body.velocity.x += x;
-        Ball._player.body.velocity.y += y*0.5;
-    },
-    finishLevel: function() {
-        if(this.level >= this.maxLevels) {
-            this.totalTimer += this.timer;
-            alert('Congratulations, game completed!\nTotal time of play: '+this.totalTimer+' seconds!');
-            this.game.state.start('MainMenu');
-        }
-        else {
-            alert('Congratulations, level '+this.level+' completed!');
-            this.totalTimer += this.timer;
-            this.timer = 0;
-            this.level++;
-            this.timerText.setText("Time: "+this.timer);
-            this.totalTimeText.setText("Total time: "+this.totalTimer);
-            this.levelText.setText("Level: "+this.level+" / "+this.maxLevels);
-            this.ball.body.x = this.ballStartPos.x;
-            this.ball.body.y = this.ballStartPos.y;
-            this.ball.body.velocity.x = 0;
-            this.ball.body.velocity.y = 0;
-            this.showLevel();
-        }
-    },
-    render: function() {
-        // this.game.debug.body(this.ball);
-        // this.game.debug.body(this.hole);
-    }
+	},
+	handleOrientation: function(e) {
+		// Device Orientation API
+		var x = e.gamma; // range [-90,90], left-right
+		var y = e.beta;  // range [-180,180], top-bottom
+		var z = e.alpha; // range [0,360], up-down
+		Ball._player.body.velocity.x += x;
+		Ball._player.body.velocity.y += y*0.5;
+	},
+	finishLevel: function() {
+		if(this.level >= this.maxLevels) {
+			this.totalTimer += this.timer;
+			alert('Congratulations, game completed!\nTotal time of play: '+this.totalTimer+' seconds!');
+			this.game.state.start('MainMenu');
+		}
+		else {
+			alert('Congratulations, level '+this.level+' completed!');
+			this.totalTimer += this.timer;
+			this.timer = 0;
+			this.level++;
+			this.timerText.setText("Time: "+this.timer);
+			this.totalTimeText.setText("Total time: "+this.totalTimer);
+			this.levelText.setText("Level: "+this.level+" / "+this.maxLevels);
+			this.ball.body.x = this.ballStartPos.x;
+			this.ball.body.y = this.ballStartPos.y;
+			this.ball.body.velocity.x = 0;
+			this.ball.body.velocity.y = 0;
+			this.showLevel();
+		}
+	},
+	render: function() {
+		// this.game.debug.body(this.ball);
+		// this.game.debug.body(this.hole);
+	}
 };
