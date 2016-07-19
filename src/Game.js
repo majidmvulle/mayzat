@@ -119,12 +119,14 @@ Ball.Game.prototype = {
                     case 'wall-wide': {
                         var wall = newLevel.create(item.x, item.y + this.panelHeight, 'wall-wide');
                         wall.scale.setTo(Number(item.s) / 1000, 1);
+                        wall.data = item
                         break;
                     }
 
                     case 'wall-tall': {
                         var wall = newLevel.create(item.x, item.y + this.panelHeight, 'wall-tall');
                         wall.scale.setTo(1, Number(item.s) / 1000);
+                        wall.data = item
                         break;
                     }
 
@@ -182,7 +184,7 @@ Ball.Game.prototype = {
 		this.physics.arcade.collide(this.ball, this.levels[this.level-1], this.wallCollision, null, this);
 		this.physics.arcade.overlap(this.ball, this.hole, this.finishLevel, null, this);
 	},
-	wallCollision: function() {
+	wallCollision: function(ball, obstacle) {
 		if(this.audioStatus) {
 			this.bounceSound.play();
 		}
@@ -190,6 +192,11 @@ Ball.Game.prototype = {
 		if("vibrate" in window.navigator) {
 			window.navigator.vibrate(100);
 		}
+
+        if (obstacle.data.t) {
+            // hit element with data
+            // console.log('You have hit', obstacle.data.t)
+        }
 	},
 	handleOrientation: function(e) {
 		// Device Orientation API
