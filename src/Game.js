@@ -36,6 +36,7 @@ Ball.Game.prototype = {
 		this.fontSmall = { font: "16px Arial", fill: "#e4beef" };
 		this.fontBig = { font: "24px Arial", fill: "#e4beef" };
 		this.fontMessage = { font: "24px Arial", fill: "#e4beef",  align: "center", stroke: "#320C3E", strokeThickness: 4 };
+		this.fontQuestion = { font: "24px Arial", fill: "#fff",  align: "center", stroke: "#320C3E", strokeThickness: 4 };
 		this.audioStatus = true;
 		this.timer = 0;
 		this.totalTimer = 0;
@@ -110,10 +111,10 @@ Ball.Game.prototype = {
 				{ x: 550, y: 525, t: 'wall-wide', s: '300' },
 				{ x: 705, y: 120, t: 'wall-tall', s: '225' },
 				{ x: 851, y: 125, t: 'wall-wide', s: '450' },
-                { x: 0, y: 100, t: 'syringe', q: 0 },
-                { x: 0, y: 200, t: 'bill', q:1 },
-                { x: 0, y: 300, t: 'fence', q:2 },
-                { x: 0, y: 400, t: 'cone',  q: 3}
+                { x: 0, y: 100, t: 'syringe', q: "Question 1" },
+                { x: 0, y: 200, t: 'bill', q:"Question 2" },
+                { x: 0, y: 300, t: 'fence', q:"Question 3" },
+                { x: 0, y: 400, t: 'cone',  q: "Question 4"}
 			],
 			[
 				{ x: 100, y: 100, t: 'wall-wide', s: '1050' },
@@ -211,8 +212,12 @@ Ball.Game.prototype = {
 		}
 		this.levels[lvl-1].show();
 	},
-	updateCounter: function() {
-		this.timer++;
+	updateCounter: function(seconds) {
+	    if(seconds) {
+	        this.timer+=seconds;
+        } else {
+          this.timer++;
+        }
 		this.timerText.setText("Time: "+this.timer);
 		this.totalTimeText.setText("Total time: "+(this.totalTimer+this.timer));
 	},
@@ -259,6 +264,7 @@ Ball.Game.prototype = {
         if (wall.data.t) {
             // hit element with data
             // console.log('You have hit', obstacle.data.t)
+
         }
 	},
 
@@ -273,7 +279,19 @@ Ball.Game.prototype = {
 
         if (obstacle.data.t) {
             // console.log('You have hit', obstacle.data.t, 'question', obstacle.data.q)
+            this.showQuestion(obstacle.data.q);
         }
+    },
+
+    showQuestion: function (question) {
+        this.game.paused = true;
+        var questionText = this.add.text(Ball._WIDTH*0.5, 250, question, this.fontQuestion);
+        questionText.anchor.set(0.5);
+        this.input.onDown.add(function(){
+            questionText.destroy();
+            this.updateCounter(3);
+            this.game.paused = false;
+        }, this);
     },
 
 	handleOrientation: function(e) {
