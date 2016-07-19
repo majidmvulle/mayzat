@@ -34,6 +34,7 @@ Ball.Game.prototype = {
 
 		this.physics.startSystem(Phaser.Physics.ARCADE);
 		this.fontSmall = { font: "16px Arial", fill: "#e4beef" };
+		this.fontQuestionButton = { font: "16px Arial", fill: "#c0c0c0" };
 		this.fontBig = { font: "24px Arial", fill: "#e4beef" };
 		this.fontMessage = { font: "24px Arial", fill: "#e4beef",  align: "center", stroke: "#320C3E", strokeThickness: 4 };
 		this.fontQuestion = { font: "24px Arial", fill: "#fff",  align: "center", stroke: "#320C3E", strokeThickness: 4 };
@@ -288,19 +289,29 @@ Ball.Game.prototype = {
 
         if (obstacle.data.t) {
             // console.log('You have hit', obstacle.data.t, 'question', obstacle.data.q)
-            this.showQuestion(obstacle.data.q);
+            this.showQuestion('title', obstacle.data.q, 'continue');
         }
     },
 
-    showQuestion: function (question) {
+    showQuestion: function (title, body, button) {
         this.game.paused = true;
-        var questionText = this.add.text(Ball._WIDTH*0.5, 250, question, this.fontQuestion);
-        questionText.anchor.set(0.5);
+        this.questionTitle = this.add.text(Ball._WIDTH*0.5, 250, title, this.fontQuestion);
+        this.questionBody = this.add.text(Ball._WIDTH*0.5, 280, body, this.fontSmall);
+        this.questionButton = this.add.text(Ball._WIDTH*0.5, 300, button, this.fontQuestionButton);
+        this.questionButton.anchor.set(0, 0.5);
+        this.questionTitle.anchor.set(0, 0.5);
+        this.questionBody.anchor.set(0, 0.5);
         this.input.onDown.add(function(){
-            questionText.destroy();
-            this.updateCounter(3);
-            this.game.paused = false;
+            this.hideQuestion();
         }, this);
+    },
+
+    hideQuestion: function() {
+        this.questionTitle.destroy();
+        this.questionBody.destroy();
+        this.questionButton.destroy();
+        this.updateCounter(3);
+        this.game.paused = false;
     },
 
 	handleOrientation: function(e) {
