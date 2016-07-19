@@ -56,7 +56,7 @@ Ball.Game.prototype = {
 		this.borderGroup.create(0, 0, 'border-vertical');
 		this.borderGroup.create(Ball._WIDTH-2, 0, 'border-vertical');
 		this.borderGroup.setAll('body.immovable', true);
-		this.bounceSound = this.game.add.audio('audio-bounce');
+		this.bounceSound = this.game.add.audio('audio-ouch');
 	},
 	initLevels: function() {
 		this.levels = [];
