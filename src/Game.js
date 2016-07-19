@@ -1,17 +1,20 @@
-Ball.Level = function(maze, obstacles) {
+Ball.Level = function(maze, obstacles, collectibles) {
     this.maze = maze;
     this.obstacles = obstacles;
-};
+    this.collectibles = collectibles;
+}
 
 Ball.Level.prototype.show = function() {
     this.maze.visible = true;
     this.obstacles.visible = true;
-};
+    this.collectibles.visible = true;
+}
 
 Ball.Level.prototype.hide = function() {
     this.maze.visible = false;
     this.obstacles.visible = false;
-};
+    this.collectibles.visible = false;
+}
 
 Ball.OBSTACLES = {
     'syringe' : 'obstacle-1',
@@ -144,8 +147,8 @@ Ball.Game.prototype = {
 				{ x: 550, y: 250, t: 'bill', q: 1 },
 				{ x: 800, y: 200, t: 'fence', q: 2 },
 				{ x: 600, y: 400, t: 'cone',  q: 3 },
-				{ x: 1100, y: 100, t: 'exit' }
-
+				{ x: 1100, y: 100, t: 'exit' },
+                { x: 100, y: 100, t: 'bayzat' }
 			],
 			[
 				{ x: 100, y: 100, t: 'wall-wide', s: '1050' },
@@ -164,7 +167,8 @@ Ball.Game.prototype = {
 				{ x: 450, y: 120, t: 'bill', q:1 },
 				{ x: 1100, y: 250, t: 'fence', q:2 },
 				{ x: 600, y: 400, t: 'cone',  q: 3},
-				{ x: 660, y: 100, t: 'exit' }
+				{ x: 660, y: 100, t: 'exit' },
+                { x: 200, y: 200, t: 'bayzat' }
 			],
 			[
 				{ x: 0, y: 325, t: 'wall-wide', s: '300' },
@@ -189,23 +193,21 @@ Ball.Game.prototype = {
 				{ x: 750, y: 120, t: 'bill', q:1 },
 				{ x: 1100, y: 350, t: 'fence', q:2 },
 				{ x: 330, y: 400, t: 'cone',  q: 3},
-				{ x: 100, y: 100, t: 'exit' }
-
+				{ x: 100, y: 100, t: 'exit' },
+                { x: 0, y: 0, t: 'bayzat' }
 			]
 		];
 		for(var i=0; i<this.maxLevels; i++) {
 			var maze = this.add.group(),
-                obstacles = this.add.group();
+                obstacles = this.add.group(),
+                collectibles = this.add.group();
 
             // maze body
-			maze.enableBody = true;
-			maze.physicsBodyType = Phaser.Physics.ARCADE;
+            this.makePhysicsBody(maze);
+            this.makePhysicsBody(obstacles);
+            this.makePhysicsBody(collectibles);
 
-            //obstacles
-            obstacles.enableBody = true;
-            obstacles.physicsBodyType = Phaser.Physics.ARCADE;
-
-			for(var e=0; e<this.levelData[i].length; e++) {
+			for(var e = 0; e<this.levelData[i].length; e++) {
 				var item = this.levelData[i][e];
                 switch (item.t) {
                     case 'wall-wide': {
@@ -238,8 +240,15 @@ Ball.Game.prototype = {
                         break;
                     }
 
+                    case 'bayzat': {
+                        var collectible = collectibles.create(item.x, item.y + this.panelHeight, 'bayzat')
+                        collectible.scale.setTo(0.5, 0.5);
+                        collectible.data = item
+                        break;
+                    }
+
                     default: {
-                        maze.create(item.x, item.y, 'element-'+item.t);
+                        maze.create(item.x, item.y, item.t);
                         break;
                     }
                 }
@@ -247,12 +256,17 @@ Ball.Game.prototype = {
 
 			maze.setAll('body.immovable', true);
             obstacles.setAll('body.immovable', true)
+            collectibles.setAll('body.immovable', true)
 
-            var level = new Ball.Level(maze, obstacles)
+            var level = new Ball.Level(maze, obstacles, collectibles)
             level.hide()
 			this.levels.push(level);
 		}
 	},
+    makePhysicsBody: function(item) {
+        item.enableBody = true;
+        item.physicsBodyType = Phaser.Physics.ARCADE;
+    },
 	showLevel: function(level) {
 		var lvl = level | this.level;
 		if(this.levels[lvl-2]) {
@@ -269,6 +283,7 @@ Ball.Game.prototype = {
 		this.timerText.setText("Time: "+this.timer);
 		this.totalTimeText.setText("Total time: "+(this.totalTimer+this.timer));
 	},
+
 	managePause: function() {
 		this.game.paused = true;
 		var pausedText = this.add.text(630, 250, "Game paused,\ntap anywhere to continue.", this.fontMessage);
@@ -298,6 +313,7 @@ Ball.Game.prototype = {
 		this.physics.arcade.collide(this.ball, this.borderGroup, this.wallCollision, null, this);
 		this.physics.arcade.collide(this.ball, this.levels[this.level-1].maze, this.wallCollision, null, this);
         this.physics.arcade.collide(this.ball, this.levels[this.level-1].obstacles, this.obstacleCollision, null, this);
+        this.physics.arcade.collide(this.ball, this.levels[this.level-1].collectibles, this.collectibleCollision, null, this);
 		this.physics.arcade.overlap(this.ball, this.hole, this.finishLevel, null, this);
 	},
 	wallCollision: function(ball, wall) {
@@ -330,6 +346,22 @@ Ball.Game.prototype = {
             this.showQuestion(Ball.QUESTIONS[obstacle.data.q]);
         }
     },
+
+    collectibleCollision: function(ball, collectible) {
+        // if(this.audioStatus) {
+        //     this.hahSound.play();
+        // }
+        // // Vibration API
+        // if("vibrate" in window.navigator) {
+        //     window.navigator.vibrate(100);
+        // }
+
+        if (collectible.data.t) {
+            this.levels[this.level-1].collectibles.remove(collectible)
+            this.levels[this.level-1].obstacles.destroy()
+        }
+    },
+
 
     showQuestion: function (question) {
         this.game.paused = true;

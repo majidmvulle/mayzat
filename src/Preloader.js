@@ -6,6 +6,7 @@ Ball.Preloader.prototype = {
 		this.load.setPreloadSprite(this.preloadBar);
 
 		this.load.image('ball', 'img/head.png');
+        this.load.image('bayzat', 'img/logo.png');
 		this.load.image('hole', 'img/hole.png');
 		this.load.image('element-w', 'img/element-w.png');
 		this.load.image('element-h', 'img/element-h.png');
