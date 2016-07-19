@@ -33,7 +33,7 @@ Ball.QUESTIONS = [
     },
     {
         'title': "Treatment not covered by policy",
-        'body': 'What is this rash you got i all bad places? Better get that checked out. As you get to the\n'
+        'body': 'What is this rash you got it all bad places? Better get that checked out. As you get to the\n'
             + 'hospital they present you with a list of all the deseases that your plan do not cover - and this is one of them!\n'
             + 'Bummer, you should have considered your health insurance plan more thoughtfully.',
         'button' : 'Pay full price for treatment'
