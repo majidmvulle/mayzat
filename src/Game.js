@@ -1,3 +1,25 @@
+Ball.Level = function(maze, obstacles) {
+    this.maze = maze;
+    this.obstacles = obstacles;
+}
+
+Ball.Level.prototype.show = function() {
+    this.maze.visible = true;
+    this.obstacles.visible = true;
+}
+
+Ball.Level.prototype.hide = function() {
+    this.maze.visible = false;
+    this.obstacles.visible = false;
+}
+
+Ball.OBSTACLES = {
+    'syringe' : 'obstacle-1',
+    'bill': 'obstacle-2',
+    'fence': 'obstacle-3',
+    'cone': 'obstacle-4'
+}
+
 Ball.Game = function(game) {};
 Ball.Game.prototype = {
 	create: function() {
@@ -60,6 +82,8 @@ Ball.Game.prototype = {
 		this.borderGroup.create(Ball._WIDTH-2, 0, 'border-vertical');
 		this.borderGroup.setAll('body.immovable', true);
 		this.bounceSound = this.game.add.audio('audio-ouch');
+        this.hahSound = this.game.add.audio('audio-hah');
+
 	},
 	initLevels: function() {
 		this.levels = [];
@@ -72,7 +96,10 @@ Ball.Game.prototype = {
 				{ x: 550, y: 525, t: 'wall-wide', s: '300' },
 				{ x: 705, y: 120, t: 'wall-tall', s: '225' },
 				{ x: 851, y: 125, t: 'wall-wide', s: '450' },
-
+                { x: 0, y: 100, t: 'syringe', q: 0 },
+                { x: 0, y: 200, t: 'bill', q:1 },
+                { x: 0, y: 300, t: 'fence', q:2 },
+                { x: 0, y: 400, t: 'cone',  q: 3}
 			],
 			[
 				{ x: 100, y: 100, t: 'wall-wide', s: '1050' },
@@ -110,44 +137,65 @@ Ball.Game.prototype = {
 			]
 		];
 		for(var i=0; i<this.maxLevels; i++) {
-			var newLevel = this.add.group();
-			newLevel.enableBody = true;
-			newLevel.physicsBodyType = Phaser.Physics.ARCADE;
+			var maze = this.add.group(),
+                obstacles = this.add.group();
+
+            // maze body
+			maze.enableBody = true;
+			maze.physicsBodyType = Phaser.Physics.ARCADE;
+
+            //obstacles
+            obstacles.enableBody = true;
+            obstacles.physicsBodyType = Phaser.Physics.ARCADE;
+
 			for(var e=0; e<this.levelData[i].length; e++) {
 				var item = this.levelData[i][e];
                 switch (item.t) {
                     case 'wall-wide': {
-                        var wall = newLevel.create(item.x, item.y + this.panelHeight, 'wall-wide');
+                        var wall = maze.create(item.x, item.y + this.panelHeight, 'wall-wide');
                         wall.scale.setTo(Number(item.s) / 1000, 1);
                         wall.data = item
                         break;
                     }
 
                     case 'wall-tall': {
-                        var wall = newLevel.create(item.x, item.y + this.panelHeight, 'wall-tall');
+                        var wall = maze.create(item.x, item.y + this.panelHeight, 'wall-tall');
                         wall.scale.setTo(1, Number(item.s) / 1000);
                         wall.data = item
                         break;
                     }
 
+                    case 'syringe':
+                    case 'bill':
+                    case 'fence':
+                    case 'cone': {
+                        var obstacle = obstacles.create(item.x, item.y + this.panelHeight, Ball.OBSTACLES[item.t])
+                        obstacle.scale.setTo(0.5, 0.5);
+                        obstacle.data = item
+                        break;
+                    }
+
                     default: {
-                        newLevel.create(item.x, item.y, 'element-'+item.t);
+                        maze.create(item.x, item.y, 'element-'+item.t);
                         break;
                     }
                 }
 			}
 
-			newLevel.setAll('body.immovable', true);
-			newLevel.visible = false;
-			this.levels.push(newLevel);
+			maze.setAll('body.immovable', true);
+            obstacles.setAll('body.immovable', true)
+
+            var level = new Ball.Level(maze, obstacles)
+            level.hide()
+			this.levels.push(level);
 		}
 	},
 	showLevel: function(level) {
 		var lvl = level | this.level;
 		if(this.levels[lvl-2]) {
-			this.levels[lvl-2].visible = false;
+			this.levels[lvl-2].hide();
 		}
-		this.levels[lvl-1].visible = true;
+		this.levels[lvl-1].show();
 	},
 	updateCounter: function() {
 		this.timer++;
@@ -181,10 +229,11 @@ Ball.Game.prototype = {
 			this.ball.body.velocity.y += this.movementForce;
 		}
 		this.physics.arcade.collide(this.ball, this.borderGroup, this.wallCollision, null, this);
-		this.physics.arcade.collide(this.ball, this.levels[this.level-1], this.wallCollision, null, this);
+		this.physics.arcade.collide(this.ball, this.levels[this.level-1].maze, this.wallCollision, null, this);
+        this.physics.arcade.collide(this.ball, this.levels[this.level-1].obstacles, this.obstacleCollision, null, this);
 		this.physics.arcade.overlap(this.ball, this.hole, this.finishLevel, null, this);
 	},
-	wallCollision: function(ball, obstacle) {
+	wallCollision: function(ball, wall) {
 		if(this.audioStatus) {
 			this.bounceSound.play();
 		}
@@ -193,11 +242,26 @@ Ball.Game.prototype = {
 			window.navigator.vibrate(100);
 		}
 
-        if (obstacle.data.t) {
+        if (wall.data.t) {
             // hit element with data
             // console.log('You have hit', obstacle.data.t)
         }
 	},
+
+    obstacleCollision: function(ball, obstacle) {
+        if(this.audioStatus) {
+			this.hahSound.play();
+		}
+		// Vibration API
+		if("vibrate" in window.navigator) {
+			window.navigator.vibrate(100);
+		}
+
+        if (obstacle.data.t) {
+            // console.log('You have hit', obstacle.data.t, 'question', obstacle.data.q)
+        }
+    },
+
 	handleOrientation: function(e) {
 		// Device Orientation API
 		var x = e.gamma; // range [-90,90], left-right
