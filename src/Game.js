@@ -376,9 +376,14 @@ Ball.Game.prototype = {
         this.game.paused = true;
         this.questionBg = this.add.sprite(Ball._WIDTH*0.3, 200, 'panel')
         this.questionBg.scale.setTo(3, 5)
+
+        this.buttonBg = this.add.sprite(Ball._WIDTH*0.5, 370, 'button')
+        this.buttonBg.scale.setTo(3, 0.6)
+
         this.questionTitle = this.add.text(Ball._WIDTH*0.5, 250, question.title, this.fontQuestionTitle);
         this.questionBody = this.add.text(Ball._WIDTH*0.5, 320, question.body, this.fontQuestionBody);
-        this.questionButton = this.add.text(Ball._WIDTH*0.5, 400, question.button, this.fontQuestionButton);
+        this.questionButton = this.add.text(Ball._WIDTH*0.6, 400, question.button, this.fontQuestionButton);
+
         this.questionButton.anchor.set(0, 0.5);
         this.questionTitle.anchor.set(0, 0.5);
         this.questionBody.anchor.set(0, 0.5);
@@ -392,6 +397,7 @@ Ball.Game.prototype = {
         this.questionBody.destroy();
         this.questionButton.destroy();
         this.questionBg.destroy();
+        this.buttonBg.destroy();
         this.updateCounter(3);
         this.game.paused = false;
     },
