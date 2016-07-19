@@ -1,7 +1,8 @@
-Ball.Level = function(maze, obstacles, collectibles) {
+Ball.Level = function(maze, obstacles, collectibles, exit) {
     this.maze = maze;
     this.obstacles = obstacles;
     this.collectibles = collectibles;
+    this.exit = exit;
 }
 
 Ball.Level.prototype.show = function() {
@@ -200,7 +201,8 @@ Ball.Game.prototype = {
 		for(var i=0; i<this.maxLevels; i++) {
 			var maze = this.add.group(),
                 obstacles = this.add.group(),
-                collectibles = this.add.group();
+                collectibles = this.add.group(),
+                exit = {}
 
             // maze body
             this.makePhysicsBody(maze);
@@ -235,8 +237,8 @@ Ball.Game.prototype = {
                     }
 
                     case 'exit': {
-                        this.hole.x = item.x;
-                        this.hole.y = item.y;
+                        exit.x = item.x;
+                        exit.y = item.y;
                         break;
                     }
 
@@ -258,7 +260,7 @@ Ball.Game.prototype = {
             obstacles.setAll('body.immovable', true)
             collectibles.setAll('body.immovable', true)
 
-            var level = new Ball.Level(maze, obstacles, collectibles)
+            var level = new Ball.Level(maze, obstacles, collectibles, exit)
             level.hide()
 			this.levels.push(level);
 		}
@@ -272,6 +274,8 @@ Ball.Game.prototype = {
 		if(this.levels[lvl-2]) {
 			this.levels[lvl-2].hide();
 		}
+        this.hole.x = this.levels[lvl-1].exit.x;
+        this.hole.y = this.levels[lvl-1].exit.y;
 		this.levels[lvl-1].show();
 	},
 	updateCounter: function(seconds) {
