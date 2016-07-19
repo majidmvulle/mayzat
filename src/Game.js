@@ -92,9 +92,9 @@ Ball.Game.prototype = {
 
         var verticalGroup2 = this.borderGroup.create(1278, 0, 'border-vertical');
         verticalGroup2.scale.setTo(1, 1.48);
-        
+
 		this.borderGroup.setAll('body.immovable', true);
-        
+
 		this.bounceSound = this.game.add.audio('audio-ouch');
         this.hahSound = this.game.add.audio('audio-hah');
 
@@ -113,7 +113,8 @@ Ball.Game.prototype = {
                 { x: 0, y: 100, t: 'syringe', q: 0 },
                 { x: 0, y: 200, t: 'bill', q:1 },
                 { x: 0, y: 300, t: 'fence', q:2 },
-                { x: 0, y: 400, t: 'cone',  q: 3}
+                { x: 0, y: 400, t: 'cone',  q: 3},
+                { x:1000, y: 100, t: 'exit' }
 			],
 			[
 				{ x: 100, y: 100, t: 'wall-wide', s: '1050' },
@@ -186,6 +187,12 @@ Ball.Game.prototype = {
                         var obstacle = obstacles.create(item.x, item.y + this.panelHeight, Ball.OBSTACLES[item.t])
                         obstacle.scale.setTo(0.5, 0.5);
                         obstacle.data = item
+                        break;
+                    }
+
+                    case 'exit': {
+                        this.hole.x = item.x;
+                        this.hole.y = item.y;
                         break;
                     }
 
