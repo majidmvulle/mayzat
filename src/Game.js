@@ -136,6 +136,13 @@ Ball.Game.prototype = {
 
 		this.bounceSound = this.game.add.audio('audio-ouch');
         this.hahSound = this.game.add.audio('audio-hah');
+        this.hahSound.onStop.add(function() {
+            this.playingQuestionSound = false;
+
+            if (this.showingQuestion) {
+                this.game.paused = true;
+            }
+        }, this)
 
 	},
 	initLevels: function() {
@@ -297,10 +304,12 @@ Ball.Game.prototype = {
 		this.game.paused = true;
 		var pausedText = this.add.text(630, 250, "Game paused,\ntap anywhere to continue.", this.fontMessage);
 		pausedText.anchor.set(0.5);
-		this.input.onDown.add(function(){
+        var onInputDown = function() {
 			pausedText.destroy();
 			this.game.paused = false;
-		}, this);
+            this.input.onDown.remove(onInputDown, this)
+		}
+		this.input.onDown.add(onInputDown, this);
 	},
 	manageAudio: function() {
 		this.audioStatus =! this.audioStatus;
@@ -342,16 +351,16 @@ Ball.Game.prototype = {
 	},
 
     obstacleCollision: function(ball, obstacle) {
-        if(this.audioStatus) {
+        if (this.audioStatus) {
+            this.playingQuestionSound = true;
 			this.hahSound.play();
 		}
 		// Vibration API
-		if("vibrate" in window.navigator) {
+		if ("vibrate" in window.navigator) {
 			window.navigator.vibrate(100);
 		}
 
         if (obstacle.data.t) {
-             console.log('You have hit', obstacle.data.t, 'question', obstacle.data.q, Ball.QUESTIONS[obstacle.data.q])
             this.showQuestion(Ball.QUESTIONS[obstacle.data.q]);
         }
     },
@@ -373,7 +382,10 @@ Ball.Game.prototype = {
 
 
     showQuestion: function (question) {
-        this.game.paused = true;
+        this.showingQuestion = true;
+        if (!this.playingQuestionSound) {
+            this.game.paused =  true;
+        }
         this.questionBg = this.add.sprite(Ball._WIDTH*0.3, 200, 'panel')
         this.questionBg.scale.setTo(3, 5)
 
@@ -388,9 +400,11 @@ Ball.Game.prototype = {
         this.questionButton.anchor.set(0, 0.5);
         this.questionTitle.anchor.set(0, 0.5);
         this.questionBody.anchor.set(0, 0.5);
-        this.input.onDown.add(function(){
+        var questionCloseHandler = function(){
+            this.input.onDown.remove(questionCloseHandler, this)
             this.hideQuestion();
-        }, this);
+        }
+        this.input.onDown.add(questionCloseHandler, this);
     },
 
     hideQuestion: function() {
@@ -400,7 +414,7 @@ Ball.Game.prototype = {
         this.questionBg.destroy();
         this.buttonBg.destroy();
         this.updateCounter(3);
-        this.game.paused = false;
+        this.showingQuestion = this.game.paused = false;
     },
 
 	handleOrientation: function(e) {
