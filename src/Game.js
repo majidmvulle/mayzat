@@ -20,6 +20,29 @@ Ball.OBSTACLES = {
     'cone': 'obstacle-4'
 }
 
+Ball.QUESTIONS = [
+    {
+        'title': "Didn't get pre-authorization",
+        'body': 'The plan you selected requires pre-authorization for dental benefits and the fancy pancy place you want to go to did not get pre-authorized. You get so bummed you decide to sit and sulk.',
+        'button' : 'button'
+    },
+    {
+        'title': "Question 1",
+        'body': 'Question body',
+        'button' : 'button'
+    },
+    {
+        'title': "Question 2",
+        'body': 'Question body',
+        'button' : 'button'
+    },
+    {
+        'title': "Question 3",
+        'body': 'Question body',
+        'button' : 'button'
+    },
+]
+
 Ball.Game = function(game) {};
 Ball.Game.prototype = {
     create: function() {
@@ -34,10 +57,11 @@ Ball.Game.prototype = {
 
 		this.physics.startSystem(Phaser.Physics.ARCADE);
 		this.fontSmall = { font: "16px Arial", fill: "#e4beef" };
+		this.fontQuestionTitle = { font: "24px Arial", fill: "#fff",  align: "center" };
+		this.fontQuestionBody = { font: "16px Arial", fill: "#fff",  align: "center"  };
 		this.fontQuestionButton = { font: "16px Arial", fill: "#c0c0c0" };
 		this.fontBig = { font: "24px Arial", fill: "#e4beef" };
 		this.fontMessage = { font: "24px Arial", fill: "#e4beef",  align: "center", stroke: "#320C3E", strokeThickness: 4 };
-		this.fontQuestion = { font: "24px Arial", fill: "#fff",  align: "center", stroke: "#320C3E", strokeThickness: 4 };
 		this.audioStatus = true;
 		this.timer = 0;
 		this.totalTimer = 0;
@@ -105,19 +129,18 @@ Ball.Game.prototype = {
 		this.levels = [];
 		this.levelData = [
 			[
-				{ x: 305, y: 450, t: 'wall-tall', s: '700' },
+				{ x: 305, y: 450, t: 'wall-tall', s: '210' },
 				{ x: 580, y: 0, t: 'wall-tall', s: '250' },
 				{ x: 100, y: 325, t: 'wall-wide', s: '250' },
 				{ x: 451, y: 325, t: 'wall-wide', s: '450' },
 				{ x: 550, y: 525, t: 'wall-wide', s: '300' },
 				{ x: 705, y: 120, t: 'wall-tall', s: '225' },
 				{ x: 851, y: 125, t: 'wall-wide', s: '450' },
-
-                { x: 0, y: 100, t: 'syringe', q: "Question 1" },
-                { x: 0, y: 200, t: 'bill', q:"Question 2" },
-                { x: 0, y: 300, t: 'fence', q:"Question 3" },
-                { x: 0, y: 400, t: 'cone',  q: "Question 4"},
-                { x:1000, y: 100, t: 'exit' }
+				{ x: 900, y: 50, t: 'syringe', q: 0 },
+				{ x: 550, y: 250, t: 'bill', q: 1 },
+				{ x: 800, y: 200, t: 'fence', q: 2 },
+				{ x: 600, y: 400, t: 'cone',  q: 3 },
+				{ x: 1100, y: 100, t: 'exit' }
 
 			],
 			[
@@ -132,7 +155,12 @@ Ball.Game.prototype = {
 				{ x: 100, y: 325, t: 'wall-tall', s: '250' },
 				{ x: 1151, y: 325, t: 'wall-tall', s: '250' },
 				{ x: 550, y: 525, t: 'wall-tall', s: '100' },
-				{ x: 700, y: 525, t: 'wall-tall', s: '100' }
+				{ x: 700, y: 525, t: 'wall-tall', s: '100' },
+				{ x: 1200, y: 50, t: 'syringe', q: 0 },
+				{ x: 450, y: 120, t: 'bill', q:1 },
+				{ x: 1100, y: 250, t: 'fence', q:2 },
+				{ x: 600, y: 400, t: 'cone',  q: 3},
+				{ x: 660, y: 100, t: 'exit' }
 			],
 			[
 				{ x: 0, y: 325, t: 'wall-wide', s: '300' },
@@ -152,7 +180,13 @@ Ball.Game.prototype = {
 				{ x: 605, y: 334, t: 'wall-tall', s: '100' },
 				{ x: 400, y: 225, t: 'wall-tall', s: '300' },
 				{ x: 300, y: 425, t: 'wall-tall', s: '150' },
-				{ x: 200, y: 425, t: 'wall-tall', s: '400' }
+				{ x: 200, y: 425, t: 'wall-tall', s: '233' },
+				{ x: 300, y: 120, t: 'syringe', q: 0 },
+				{ x: 750, y: 120, t: 'bill', q:1 },
+				{ x: 1100, y: 350, t: 'fence', q:2 },
+				{ x: 330, y: 400, t: 'cone',  q: 3},
+				{ x: 100, y: 100, t: 'exit' }
+
 			]
 		];
 		for(var i=0; i<this.maxLevels; i++) {
@@ -288,16 +322,16 @@ Ball.Game.prototype = {
 		}
 
         if (obstacle.data.t) {
-            // console.log('You have hit', obstacle.data.t, 'question', obstacle.data.q)
-            this.showQuestion('title', obstacle.data.q, 'continue');
+             console.log('You have hit', obstacle.data.t, 'question', obstacle.data.q, Ball.QUESTIONS[obstacle.data.q])
+            this.showQuestion(Ball.QUESTIONS[obstacle.data.q]);
         }
     },
 
-    showQuestion: function (title, body, button) {
+    showQuestion: function (question) {
         this.game.paused = true;
-        this.questionTitle = this.add.text(Ball._WIDTH*0.5, 250, title, this.fontQuestion);
-        this.questionBody = this.add.text(Ball._WIDTH*0.5, 280, body, this.fontSmall);
-        this.questionButton = this.add.text(Ball._WIDTH*0.5, 300, button, this.fontQuestionButton);
+        this.questionTitle = this.add.text(Ball._WIDTH*0.5, 250, question.title, this.fontQuestionTitle);
+        this.questionBody = this.add.text(Ball._WIDTH*0.5, 280, question.body, this.fontQuestionBody);
+        this.questionButton = this.add.text(Ball._WIDTH*0.5, 300, question.button, this.fontQuestionButton);
         this.questionButton.anchor.set(0, 0.5);
         this.questionTitle.anchor.set(0, 0.5);
         this.questionBody.anchor.set(0, 0.5);
