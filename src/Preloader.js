@@ -33,6 +33,7 @@ Ball.Preloader.prototype = {
 
 		this.load.audio('audio-bounce', ['audio/bounce.ogg', 'audio/bounce.mp3', 'audio/bounce.m4a']);
         this.load.audio('audio-ouch', ['audio/ouch.m4a', 'audio/ouch.mp3', 'audio/ouch.ogg']);
+        this.load.audio('audio-hah', ['audio/hah.m4a', 'audio/hah.mp3', 'audio/hah.ogg']);
 	},
 	create: function() {
 		this.game.state.start('MainMenu');
