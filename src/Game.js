@@ -1,24 +1,24 @@
 Ball.Level = function(maze, obstacles) {
     this.maze = maze;
     this.obstacles = obstacles;
-}
+};
 
 Ball.Level.prototype.show = function() {
     this.maze.visible = true;
     this.obstacles.visible = true;
-}
+};
 
 Ball.Level.prototype.hide = function() {
     this.maze.visible = false;
     this.obstacles.visible = false;
-}
+};
 
 Ball.OBSTACLES = {
     'syringe' : 'obstacle-1',
     'bill': 'obstacle-2',
     'fence': 'obstacle-3',
     'cone': 'obstacle-4'
-}
+};
 
 Ball.QUESTIONS = [
 	"Question 1",
@@ -32,6 +32,7 @@ Ball.Game = function(game) {};
 Ball.Game.prototype = {
     create: function() {
         var horizontalScale = 4;
+        var screenWidth = 1280;
 
         var screenBg = this.add.sprite(0, 0, 'screen-bg');
         screenBg.scale.setTo(horizontalScale, 2);
@@ -41,10 +42,9 @@ Ball.Game.prototype = {
         this.panelHeight = 52;
 
 		this.physics.startSystem(Phaser.Physics.ARCADE);
-		this.fontSmall = { font: "16px Arial", fill: "#e4beef" };
-		this.fontBig = { font: "24px Arial", fill: "#e4beef" };
-		this.fontMessage = { font: "24px Arial", fill: "#e4beef",  align: "center", stroke: "#320C3E", strokeThickness: 4 };
-		this.fontQuestion = { font: "24px Arial", fill: "#fff",  align: "center", stroke: "#320C3E", strokeThickness: 4 };
+		this.fontSmall = { font: "16px Tahoma", fill: "#ffffff" };
+		this.fontBig = { font: "24px Tahoma", fill: "#ffffff" };
+		this.fontMessage = { font: "24px Tahoma", fill: "#ffffff",  align: "center", stroke: "#000000", strokeThickness: 2 };
 		this.audioStatus = true;
 		this.timer = 0;
 		this.totalTimer = 0;
@@ -53,20 +53,22 @@ Ball.Game.prototype = {
 		this.movementForce = 10;
 		this.ballStartPos = { x: Ball._WIDTH*0.5, y: 450 };
 
-		this.pauseButton = this.add.button(Ball._WIDTH-8, 8, 'button-pause', this.managePause, this);
+		this.pauseButton = this.add.button(screenWidth - 15, 8, 'button-pause', this.managePause, this);
 		this.pauseButton.anchor.set(1,0);
 		this.pauseButton.input.useHandCursor = true;
-		this.audioButton = this.add.button(Ball._WIDTH-this.pauseButton.width-8*2, 8, 'button-audio', this.manageAudio, this);
+        this.pauseButton.animations.add('true', [0], 10, true);
+        this.pauseButton.animations.add('false', [1], 10, true);
+		this.audioButton = this.add.button(screenWidth - 60, 8, 'button-audio', this.manageAudio, this);
 		this.audioButton.anchor.set(1,0);
 		this.audioButton.input.useHandCursor = true;
 		this.audioButton.animations.add('true', [0], 10, true);
 		this.audioButton.animations.add('false', [1], 10, true);
 		this.audioButton.animations.play(this.audioStatus);
-		this.timerText = this.game.add.text(15, 15, "Time: "+this.timer, this.fontBig);
-		this.levelText = this.game.add.text(120, 10, "Level: "+this.level+" / "+this.maxLevels, this.fontSmall);
-		this.totalTimeText = this.game.add.text(120, 30, "Total time: "+this.totalTimer, this.fontSmall);
+		this.timerText = this.game.add.text(15, 8, "Time: "+this.timer, this.fontBig);
+		this.totalTimeText = this.game.add.text(120, 15, "Total time: "+this.totalTimer, this.fontSmall);
+        this.levelText = this.game.add.text(250, 14, "Level: " + this.level + " / " + this.maxLevels, this.fontSmall);
 
-		this.hole = this.add.sprite(Ball._WIDTH*0.5, 90, 'hole');
+        this.hole = this.add.sprite(Ball._WIDTH*0.5, 90, 'hole');
 		this.physics.enable(this.hole, Phaser.Physics.ARCADE);
 		this.hole.anchor.set(0.5);
 		this.hole.body.setSize(2, 2);
@@ -99,7 +101,7 @@ Ball.Game.prototype = {
         var verticalGroup1 = this.borderGroup.create(0, 0, 'border-vertical');
         verticalGroup1.scale.setTo(1, 1.48);
 
-        var verticalGroup2 = this.borderGroup.create(1278, 0, 'border-vertical');
+        var verticalGroup2 = this.borderGroup.create(screenWidth - 2, 0, 'border-vertical');
         verticalGroup2.scale.setTo(1, 1.48);
 
 		this.borderGroup.setAll('body.immovable', true);
@@ -250,7 +252,7 @@ Ball.Game.prototype = {
 	},
 	managePause: function() {
 		this.game.paused = true;
-		var pausedText = this.add.text(Ball._WIDTH*0.5, 250, "Game paused,\ntap anywhere to continue.", this.fontMessage);
+		var pausedText = this.add.text(630, 250, "Game paused,\ntap anywhere to continue.", this.fontMessage);
 		pausedText.anchor.set(0.5);
 		this.input.onDown.add(function(){
 			pausedText.destroy();
