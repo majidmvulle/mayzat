@@ -93,8 +93,8 @@ Ball.Game.prototype = {
 		this.audioButton.animations.add('false', [1], 10, true);
 		this.audioButton.animations.play(this.audioStatus);
 		this.timerText = this.game.add.text(15, 8, "Time: "+this.timer, this.fontBig);
-		this.totalTimeText = this.game.add.text(120, 15, "Total time: "+this.totalTimer, this.fontSmall);
-        this.levelText = this.game.add.text(250, 14, "Level: " + this.level + " / " + this.maxLevels, this.fontSmall);
+		this.totalTimeText = this.game.add.text(150, 15, "Total time: "+this.totalTimer, this.fontSmall);
+        this.levelText = this.game.add.text(300, 14, "Level: " + this.level + " / " + this.maxLevels, this.fontSmall);
 
         this.hole = this.add.sprite(Ball._WIDTH*0.5, 90, 'hole');
 		this.physics.enable(this.hole, Phaser.Physics.ARCADE);
@@ -383,6 +383,7 @@ Ball.Game.prototype = {
         this.questionTitle = this.add.text(Ball._WIDTH*0.5, 250, question.title, this.fontQuestionTitle);
         this.questionBody = this.add.text(Ball._WIDTH*0.5, 320, question.body, this.fontQuestionBody);
         this.questionButton = this.add.text(Ball._WIDTH*0.6, 400, question.button, this.fontQuestionButton);
+
 
         this.questionButton.anchor.set(0, 0.5);
         this.questionTitle.anchor.set(0, 0.5);
