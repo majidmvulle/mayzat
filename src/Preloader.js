@@ -23,6 +23,10 @@ Ball.Preloader.prototype = {
         this.load.image('wall-tall', 'img/wall-tall.png');
 		this.load.image('wall-wide', 'img/wall-wide.png');
 
+        this.load.image('obstacle-1', 'img/obstacles-01.png');
+        this.load.image('obstacle-2', 'img/obstacles-02.png');
+        this.load.image('obstacle-3', 'img/obstacles-03.png');
+        this.load.image('obstacle-4', 'img/obstacles-04.png');
 
 		this.load.spritesheet('button-audio', 'img/button-audio.png', 35, 35);
 		this.load.spritesheet('button-start', 'img/button-start.png', 291, 76);
