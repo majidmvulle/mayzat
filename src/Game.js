@@ -3,6 +3,9 @@ Ball.Game.prototype = {
 	create: function() {
 		this.add.sprite(0, 0, 'screen-bg');
 		this.add.sprite(0, 0, 'panel');
+
+        this.panelHeight = 52;
+
 		this.physics.startSystem(Phaser.Physics.ARCADE);
 		this.fontSmall = { font: "16px Arial", fill: "#e4beef" };
 		this.fontBig = { font: "24px Arial", fill: "#e4beef" };
@@ -62,7 +65,10 @@ Ball.Game.prototype = {
 		this.levels = [];
 		this.levelData = [
 			[
-				{ x: 96, y: 224, t: 'w' }
+				{ x: 0, y: 0, t: 'wall-wide', s: '25' },
+                { x: 100, y: 200, t: 'wall-wide', s: '300' },
+
+                { x: 50, y: 50, t: 'wall-tall', s: '100' }
 			],
 			[
 				{ x: 72, y: 320, t: 'w' },
@@ -100,8 +106,26 @@ Ball.Game.prototype = {
 			newLevel.physicsBodyType = Phaser.Physics.ARCADE;
 			for(var e=0; e<this.levelData[i].length; e++) {
 				var item = this.levelData[i][e];
-				newLevel.create(item.x, item.y, 'element-'+item.t);
+                switch (item.t) {
+                    case 'wall-wide': {
+                        var wall = newLevel.create(item.x, item.y + this.panelHeight, 'wall-wide');
+                        wall.scale.setTo(Number(item.s) / 1000, 1);
+                        break;
+                    }
+
+                    case 'wall-tall': {
+                        var wall = newLevel.create(item.x, item.y + this.panelHeight, 'wall-tall');
+                        wall.scale.setTo(1, Number(item.s) / 1000);
+                        break;
+                    }
+
+                    default: {
+                        newLevel.create(item.x, item.y, 'element-'+item.t);
+                        break;
+                    }
+                }
 			}
+
 			newLevel.setAll('body.immovable', true);
 			newLevel.visible = false;
 			this.levels.push(newLevel);
