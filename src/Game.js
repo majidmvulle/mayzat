@@ -27,17 +27,22 @@ Ball.OBSTACLES = {
 Ball.QUESTIONS = [
     {
         'title': "Didn't get pre-authorization",
-        'body': 'The plan you selected requires pre-authorization for dental benefits and the fancy pancy place\n you want to go to did not get pre-authorized.\nYou get so bummed you decide to sit and sulk.',
+        'body': 'The plan you selected requires pre-authorization for dental benefits and the fancy pancy place\n'
+            + 'you want to go to did not get pre-authorized. You get so bummed you decide to sit and sulk.',
         'button' : 'Continue'
     },
     {
         'title': "Treatment not covered by policy",
-        'body': 'What is this rash you got i all bad places? Better get that checked out. As you get to the\n hospital they present you with a list of all the deseases that your plan do not cover - and this is one of them! Bummer, you should have considered your health insurance plan more thoughtfully.',
+        'body': 'What is this rash you got i all bad places? Better get that checked out. As you get to the\n'
+            + 'hospital they present you with a list of all the deseases that your plan do not cover - and this is one of them!\n'
+            + 'Bummer, you should have considered your health insurance plan more thoughtfully.',
         'button' : 'Pay full price for treatment'
     },
     {
         'title': "Drug is excluded from your plan",
-        'body': 'The creams for that nasty rash of yours is sadly excluded from your plan. You didn\'t even\n consider asking about which medicines are included or not in your plan when you first bought it. It\s ok. Shit happens.',
+        'body': 'The creams for that nasty rash of yours is sadly excluded from your plan. You didn\'t even\n'
+                + 'consider asking about which medicines are included or not in your plan when you first bought it.'
+                + 'It\'s ok. Shit happens.',
         'button' : 'Consider using home remedies'
     },
     {
