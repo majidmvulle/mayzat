@@ -5,7 +5,7 @@ Ball.Preloader.prototype = {
 		this.preloadBar = this.add.sprite((Ball._WIDTH-158)*0.5, (Ball._HEIGHT-50)*0.5, 'preloaderBar');
 		this.load.setPreloadSprite(this.preloadBar);
 
-		this.load.image('ball', 'img/ball.png');
+		this.load.image('ball', 'img/head.png');
 		this.load.image('hole', 'img/hole.png');
 		this.load.image('element-w', 'img/element-w.png');
 		this.load.image('element-h', 'img/element-h.png');
@@ -22,6 +22,7 @@ Ball.Preloader.prototype = {
 		this.load.spritesheet('button-start', 'img/button-start.png', 146, 51);
 
 		this.load.audio('audio-bounce', ['audio/bounce.ogg', 'audio/bounce.mp3', 'audio/bounce.m4a']);
+        this.load.audio('audio-ouch', ['audio/ouch.m4a']);
 	},
 	create: function() {
 		this.game.state.start('MainMenu');

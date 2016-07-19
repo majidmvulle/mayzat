@@ -1,0 +1,24 @@
+{
+  "name": "mayzat",
+  "version": "1.0.0",
+  "description": "because `hackatauntaun`",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {
+    "http-server": "^0.9.0"
+  },
+  "scripts": {
+    "server": "./node_modules/.bin/http-server -o",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/majidmvulle/mayzat.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/majidmvulle/mayzat/issues"
+  },
+  "homepage": "https://github.com/majidmvulle/mayzat#readme"
+}
