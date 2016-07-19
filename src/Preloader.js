@@ -1,8 +1,8 @@
 Ball.Preloader = function(game) {};
 Ball.Preloader.prototype = {
 	preload: function() {
-		this.preloadBg = this.add.sprite((Ball._WIDTH-297)*0.5, (Ball._HEIGHT-145)*0.5, 'preloaderBg');
-		this.preloadBar = this.add.sprite((Ball._WIDTH-158)*0.5, (Ball._HEIGHT-50)*0.5, 'preloaderBar');
+		this.preloadBg = this.add.sprite(500, (Ball._HEIGHT-145)*0.5*2, 'preloaderBg');
+		this.preloadBar = this.add.sprite(570, (Ball._HEIGHT-50)*0.5*1.78, 'preloaderBar');
 		this.load.setPreloadSprite(this.preloadBar);
 
 		this.load.image('ball', 'img/head.png');
