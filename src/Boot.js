@@ -9,6 +9,7 @@ Ball.Boot.prototype = {
 		this.load.image('preloaderBar', 'img/loading-bar.png');
 	},
 	create: function() {
+        this.game.scale.width = 1280;
 		this.game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 		this.game.scale.pageAlignHorizontally = true;
 		this.game.scale.pageAlignVertically = true;
